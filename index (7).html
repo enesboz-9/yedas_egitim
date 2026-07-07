@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YEDAŞ ÇORUM — Saha Mühendisliği Eğitim Panosu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --bg:#0b141d;
+    --bg-grid: rgba(255,182,39,0.035);
+    --panel:#101e2a;
+    --panel-hi:#16283a;
+    --line:#233d51;
+    --amber:#ffb627;
+    --amber-dim:#8a6a26;
+    --danger:#e14b3d;
+    --ok:#4caf7d;
+    --cyan:#59c3c9;
+    --text:#eaf1f7;
+    --muted:#8ba0b3;
+    --muted-2:#5d7284;
+  }
+  html[data-theme="day"]{
+    --bg:#eef1f4;
+    --bg-grid: rgba(138,106,38,0.05);
+    --panel:#ffffff;
+    --panel-hi:#f2ede2;
+    --line:#d7dde2;
+    --amber:#b5730a;
+    --amber-dim:#dcb877;
+    --danger:#c23b2e;
+    --ok:#2f8a5f;
+    --cyan:#0f8b91;
+    --text:#1b2630;
+    --muted:#5a6b78;
+    --muted-2:#8a97a2;
+  }
+  html[data-theme="day"] body{ color-scheme: light; }
+  html[data-theme="day"] .opt{ background:#f6f8fa; color:#2c3944; }
+  html[data-theme="day"] .lesson-card p, html[data-theme="day"] .lesson-card ul{ color:#37444d; }
+  html[data-theme="day"] .match-item{ background:#f6f8fa; color:#2c3944; }
+  html[data-theme="day"] .formula{ background:#f2f6f8; }
+  body{ transition: background-color .3s ease, color .3s ease; }
+  *{ transition: background-color .2s ease, border-color .2s ease; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0/28px 100%,
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    line-height:1.55;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  .display{font-family:'Oswald', sans-serif; text-transform:uppercase; letter-spacing:0.03em;}
+
+  /* ---------- HEADER ---------- */
+  header.topbar{
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, #0e1b26, #0b141d);
+    padding:18px 28px;
+    position:sticky; top:0; z-index:50;
+    backdrop-filter: blur(6px);
+  }
+  .topbar-inner{
+    max-width:1180px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  .brand{display:flex; align-items:center; gap:14px;}
+  .brand-mark{width:52px; height:52px; flex:none;}
+  .brand-text .kicker{
+    font-size:11px; color:var(--amber); letter-spacing:0.22em; font-family:'IBM Plex Mono', monospace;
+  }
+  .brand-text h1{
+    margin:2px 0 0; font-size:22px; font-family:'Oswald', sans-serif; font-weight:600;
+    letter-spacing:0.04em; color:var(--text);
+  }
+  .brand-text h1 span{color:var(--amber);}
+
+  .status-panel{
+    display:flex; gap:0; border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    background:var(--panel);
+  }
+  .status-cell{
+    padding:8px 16px; border-right:1px solid var(--line); min-width:96px;
+  }
+  .status-cell:last-child{border-right:none;}
+  .status-cell .label{font-size:10px; color:var(--muted-2); letter-spacing:0.12em; font-family:'IBM Plex Mono',monospace;}
+  .status-cell .value{font-size:17px; font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--amber); margin-top:2px;}
+  .status-cell .value.ok{color:var(--ok);}
+  .status-cell .value.cyan{color:var(--cyan);}
+
+  /* ---------- HERO / SINGLE LINE DIAGRAM ---------- */
+  .hero{max-width:1180px; margin:0 auto; padding:34px 28px 10px;}
+  .hero-grid{display:grid; grid-template-columns:1.15fr 1fr; gap:34px; align-items:center;}
+  @media (max-width:880px){.hero-grid{grid-template-columns:1fr;}}
+  .hero h2{font-size:15px; color:var(--muted); font-weight:400; max-width:46ch; margin:10px 0 0;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--cyan); letter-spacing:0.16em;}
+  .hero-title{font-family:'Oswald',sans-serif; font-size:clamp(28px,4vw,42px); font-weight:600; margin:6px 0 0; line-height:1.08;}
+  .diagram-card{
+    border:1px solid var(--line); background:var(--panel); border-radius:8px; padding:18px 14px 10px;
+  }
+  .diagram-caption{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--muted-2); text-align:center; margin-top:6px; letter-spacing:0.08em;}
+
+  /* ---------- NAV (FİDER SWITCHES) ---------- */
+  nav.feeders{max-width:1180px; margin:26px auto 0; padding:0 28px;}
+  .feeders-label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted-2); letter-spacing:0.16em; margin-bottom:10px;}
+  .feeder-row{display:flex; flex-wrap:wrap; gap:10px;}
+  .feeder-btn{
+    display:flex; align-items:center; gap:9px;
+    background:var(--panel); border:1px solid var(--line); border-radius:6px;
+    padding:9px 13px; cursor:pointer; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12.5px;
+    transition:all .15s ease; user-select:none;
+  }
+  .feeder-btn:hover{border-color:var(--amber-dim); color:var(--text);}
+  .feeder-btn.active{background:var(--panel-hi); border-color:var(--amber); color:var(--amber);}
+  .led{width:9px; height:9px; border-radius:50%; background:#3a4a58; flex:none; transition:all .2s;}
+  .led.on{background:var(--amber); box-shadow:0 0 8px var(--amber);}
+  .led.done{background:var(--ok); box-shadow:0 0 8px var(--ok);}
+
+  /* ---------- MAIN ---------- */
+  main{max-width:1180px; margin:0 auto; padding:26px 28px 80px;}
+  .module{display:none;}
+  .module.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .module-head{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:14px; margin-bottom:22px;}
+  .module-head .tag{font-family:'IBM Plex Mono',monospace; color:var(--amber); font-size:12px; letter-spacing:0.14em;}
+  .module-head h3{font-family:'Oswald',sans-serif; font-size:26px; margin:4px 0 0;}
+  .module-progress{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);}
+
+  .lesson-card{
+    background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--amber);
+    border-radius:6px; padding:20px 22px; margin-bottom:26px;
+  }
+  .lesson-card h4{margin:0 0 10px; font-family:'Oswald',sans-serif; font-size:15px; letter-spacing:0.03em; color:var(--amber);}
+  .lesson-card p{margin:0 0 10px; color:#cbd9e3; font-size:14.5px;}
+  .lesson-card ul{margin:0 0 8px; padding-left:20px; color:#cbd9e3; font-size:14.5px;}
+  .lesson-card li{margin-bottom:5px;}
+  .formula{
+    display:inline-block; background:#0b1720; border:1px solid var(--line); color:var(--cyan);
+    font-family:'IBM Plex Mono',monospace; padding:2px 8px; border-radius:4px; font-size:13.5px;
+  }
+
+  .quiz-label{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.16em; color:var(--muted-2); margin:0 0 12px;}
+  .question{
+    background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:16px 18px; margin-bottom:14px;
+  }
+  .question .qtext{font-size:14.5px; margin-bottom:12px; color:var(--text);}
+  .qnum{color:var(--amber); font-family:'IBM Plex Mono',monospace; margin-right:6px;}
+  .options{display:grid; gap:8px;}
+  .opt{
+    text-align:left; background:#0e1c28; border:1px solid var(--line); color:#c8d6e0;
+    padding:10px 13px; border-radius:5px; cursor:pointer; font-size:13.5px; font-family:'Inter',sans-serif;
+    transition:all .15s;
+  }
+  .opt:hover{border-color:var(--amber-dim);}
+  .opt.correct{border-color:var(--ok); background:rgba(76,175,125,0.12); color:var(--ok);}
+  .opt.wrong{border-color:var(--danger); background:rgba(225,75,61,0.1); color:var(--danger);}
+  .opt.disabled{cursor:default; opacity:0.75;}
+  .explain{
+    margin-top:10px; font-size:13px; color:var(--muted); border-top:1px dashed var(--line); padding-top:9px; display:none;
+  }
+  .explain.show{display:block;}
+
+  .badge-strip{display:flex; align-items:center; gap:10px; margin-top:6px;}
+  .badge-pill{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; padding:5px 10px; border-radius:20px;
+    border:1px solid var(--ok); color:var(--ok); background:rgba(76,175,125,0.08);
+  }
+
+  footer{border-top:1px solid var(--line); padding:22px 28px; text-align:center;}
+  footer p{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted-2); margin:4px 0;}
+  .reset-btn{
+    margin-top:8px; background:none; border:1px solid var(--line); color:var(--muted);
+    padding:6px 14px; border-radius:5px; font-family:'IBM Plex Mono',monospace; font-size:11px; cursor:pointer;
+  }
+  .reset-btn:hover{border-color:var(--danger); color:var(--danger);}
+
+  .rank-panel{
+    max-width:1180px; margin:0 auto; padding:0 28px 10px;
+  }
+  .rank-bar{
+    background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px 20px;
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  }
+  .rank-title{font-family:'Oswald',sans-serif; font-size:18px; color:var(--amber);}
+  .rank-track{flex:1; min-width:160px; height:8px; background:#0b1720; border-radius:4px; overflow:hidden; border:1px solid var(--line);}
+  .rank-fill{height:100%; background:linear-gradient(90deg,var(--amber-dim),var(--amber)); width:0%; transition:width .4s;}
+
+  /* ---------- SYMBOL LIBRARY ---------- */
+  .symbol-section{max-width:1180px; margin:34px auto 0; padding:0 28px;}
+  .symbol-section-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px; border-bottom:1px solid var(--line); padding-bottom:12px; margin-bottom:18px;}
+  .symbol-section-head h3{font-family:'Oswald',sans-serif; font-size:22px; margin:4px 0 0;}
+  .symbol-note{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted-2); max-width:38ch; text-align:right;}
+  .symbol-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;}
+  .symbol-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:7px; padding:14px 10px 12px;
+    text-align:center; transition:border-color .15s, transform .15s; cursor:default;
+  }
+  .symbol-card:hover{border-color:var(--amber-dim); transform:translateY(-2px);}
+  .symbol-card svg{width:52px; height:52px; margin:0 auto;}
+  .symbol-card .sym-name{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--amber); margin-top:8px; letter-spacing:0.03em;}
+  .symbol-card .sym-desc{font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.4;}
+
+  /* ---------- MATCH GAME ---------- */
+  .match-wrap{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media (max-width:640px){.match-wrap{grid-template-columns:1fr;}}
+  .match-col-label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted-2); letter-spacing:0.14em; margin-bottom:10px;}
+  .match-item{
+    display:flex; align-items:center; gap:10px; width:100%; text-align:left;
+    background:#0e1c28; border:1px solid var(--line); color:#c8d6e0; border-radius:6px;
+    padding:9px 12px; margin-bottom:8px; cursor:pointer; font-size:13px; font-family:'Inter',sans-serif;
+    transition:all .15s;
+  }
+  .match-item svg{width:28px; height:28px; flex:none;}
+  .match-item:hover{border-color:var(--amber-dim);}
+  .match-item.selected{border-color:var(--cyan); background:rgba(89,195,201,0.1);}
+  .match-item.matched{border-color:var(--ok); background:rgba(76,175,125,0.12); color:var(--ok); cursor:default;}
+  .match-item.wrong{border-color:var(--danger); background:rgba(225,75,61,0.12);}
+
+  /* ---------- BOOT OVERLAY ---------- */
+  #boot-overlay{
+    position:fixed; inset:0; background:#070d13; z-index:999;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    transition:opacity .5s ease, visibility .5s ease;
+  }
+  #boot-overlay.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+  #boot-overlay .boot-label{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--amber); letter-spacing:0.18em;}
+  #boot-overlay .boot-track{width:240px; height:4px; background:#1a2530; border-radius:2px; overflow:hidden;}
+  #boot-overlay .boot-fill{height:100%; width:0%; background:var(--amber); transition:width .3s linear;}
+  @media (prefers-reduced-motion: reduce){ #boot-overlay{display:none;} }
+
+  /* ---------- NAME GATE ---------- */
+  #name-gate{
+    position:fixed; inset:0; background:rgba(7,13,19,0.94); z-index:900;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+    backdrop-filter: blur(4px);
+  }
+  #name-gate.hidden{display:none;}
+  .name-gate-card{
+    background:linear-gradient(160deg, var(--panel), var(--panel-hi)); border:1px solid var(--amber-dim);
+    border-radius:10px; padding:34px 30px; max-width:420px; width:100%; text-align:center;
+  }
+  .name-gate-card .eyebrow{display:block; margin-bottom:8px;}
+  .name-gate-card h3{font-family:'Oswald',sans-serif; font-size:20px; margin:4px 0 10px; color:var(--text);}
+  .name-gate-card p{font-family:'Inter',sans-serif; font-size:13.5px; color:var(--muted); margin:0 0 18px;}
+  .name-gate-card input{
+    width:100%; background:var(--bg); border:1px solid var(--line); color:var(--text); padding:11px 14px;
+    border-radius:6px; font-family:'Inter',sans-serif; font-size:14px; margin-bottom:14px; text-align:center;
+  }
+  .name-gate-card .cert-btn{width:100%;}
+  .name-gate-error{color:var(--danger); font-family:'IBM Plex Mono',monospace; font-size:11.5px; margin:-6px 0 10px; display:none;}
+  .name-gate-error.show{display:block;}
+
+  /* ---------- THEME TOGGLE ---------- */
+  .theme-toggle{
+    background:var(--panel); border:1px solid var(--line); border-radius:6px; color:var(--muted);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; padding:8px 12px; cursor:pointer;
+    display:flex; align-items:center; gap:7px; white-space:nowrap;
+  }
+  .theme-toggle:hover{border-color:var(--amber-dim); color:var(--text);}
+  .theme-toggle .dot{width:8px; height:8px; border-radius:50%; background:var(--amber);}
+
+  /* ---------- TOAST ---------- */
+  #toast-holder{position:fixed; bottom:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:8px;}
+  .toast{
+    background:var(--panel); border:1px solid var(--ok); color:var(--ok); border-radius:6px;
+    padding:12px 18px; font-family:'IBM Plex Mono',monospace; font-size:12.5px;
+    box-shadow:0 6px 22px rgba(0,0,0,0.35); animation:toastIn .35s ease, toastOut .4s ease 3.4s forwards;
+    max-width:280px;
+  }
+  @keyframes toastIn{from{opacity:0; transform:translateX(30px);} to{opacity:1; transform:translateX(0);}}
+  @keyframes toastOut{to{opacity:0; transform:translateX(30px);}}
+
+  /* ---------- SCROLL REVEAL ---------- */
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- CERTIFICATE ---------- */
+  .cert-section{max-width:1180px; margin:40px auto 0; padding:0 28px;}
+  .cert-locked{
+    background:var(--panel); border:1px dashed var(--line); border-radius:8px; padding:26px;
+    text-align:center; color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12.5px;
+  }
+  .cert-form{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:20px;}
+  .cert-form input{
+    background:var(--panel); border:1px solid var(--line); color:var(--text); padding:10px 14px;
+    border-radius:6px; font-family:'Inter',sans-serif; font-size:13.5px; flex:1; min-width:200px;
+  }
+  .cert-btn{
+    background:var(--amber); border:none; color:#1b1200; padding:10px 18px; border-radius:6px;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; cursor:pointer; letter-spacing:0.04em;
+  }
+  .cert-btn:hover{filter:brightness(1.08);}
+  .cert-btn.secondary{background:none; border:1px solid var(--line); color:var(--muted);}
+  #certificate-card{
+    background:linear-gradient(160deg, var(--panel), var(--panel-hi));
+    border:2px solid var(--amber); border-radius:10px; padding:42px 36px; text-align:center;
+    position:relative; overflow:hidden;
+  }
+  #certificate-card::before{
+    content:""; position:absolute; inset:8px; border:1px solid var(--amber-dim); border-radius:6px; pointer-events:none;
+  }
+  .cert-eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--cyan); letter-spacing:0.22em;}
+  .cert-heading{font-family:'Oswald',sans-serif; font-size:26px; margin:10px 0 4px; letter-spacing:0.03em;}
+  .cert-name{font-family:'Oswald',sans-serif; font-size:34px; color:var(--amber); margin:14px 0; letter-spacing:0.02em;}
+  .cert-sub{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted); margin:4px 0;}
+  .cert-meta{display:flex; justify-content:center; gap:32px; margin-top:22px; flex-wrap:wrap;}
+  .cert-meta div{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted-2);}
+  .cert-meta div b{display:block; color:var(--text); font-size:14px; margin-top:2px;}
+</style>
+</head>
+<body>
+<div id="boot-overlay">
+  <div class="boot-label mono">SİSTEM BAŞLATILIYOR — YEDAŞ ÇORUM PANOSU</div>
+  <div class="boot-track"><div class="boot-fill" id="boot-fill"></div></div>
+</div>
+<div id="toast-holder"></div>
+
+<div id="name-gate" class="hidden">
+  <div class="name-gate-card">
+    <span class="eyebrow">YEDAŞ ÇORUM · SAHA MÜHENDİSLİĞİ EĞİTİM PANOSU</span>
+    <h3>Başlamadan Önce</h3>
+    <p>Teste başlayabilmek için ad ve soyadını gir. Bu bilgi, tüm eğitimi tamamladığında sana verilecek teşekkür belgesinde kullanılacak.</p>
+    <input id="name-gate-input" type="text" placeholder="Ad Soyad" maxlength="40"/>
+    <div class="name-gate-error" id="name-gate-error">Lütfen ad ve soyadını gir.</div>
+    <button class="cert-btn" id="name-gate-submit">TESTE BAŞLA</button>
+  </div>
+</div>
+
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="58" height="58" rx="8" stroke="#ffb627" stroke-width="1.5"/>
+        <path d="M30 8 L20 30 L28 30 L24 52 L42 24 L32 24 L38 8 Z" fill="#ffb627"/>
+      </svg>
+      <div class="brand-text">
+        <div class="kicker">SAHA EĞİTİM &amp; SİMÜLASYON PANOSU</div>
+        <h1>YEDAŞ <span>ÇORUM</span></h1>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <button class="theme-toggle" id="theme-toggle"><span class="dot"></span><span id="theme-label">GECE VARDİYASI</span></button>
+      <div class="status-panel mono">
+        <div class="status-cell">
+          <div class="label">UNVAN</div>
+          <div class="value" id="stat-title">ÇIRAK</div>
+        </div>
+        <div class="status-cell">
+          <div class="label">XP</div>
+          <div class="value cyan" id="stat-xp">0</div>
+        </div>
+        <div class="status-cell">
+          <div class="label">ROZET</div>
+          <div class="value ok" id="stat-badges">0/8</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">TEK HAT ŞEMASI — İLETİMDEN SAYACA</div>
+      <h2 class="hero-title">Sahada karar verirken bilmen gereken her fider, tek panoda.</h2>
+      <p class="hero-title" style="font-size:14px;font-weight:400;color:var(--muted);margin-top:12px;max-width:52ch;">
+        Bu pano; dağıtım sistemleri, arıza analizi, koruma koordinasyonu, iş güvenliği ve
+        TEDAŞ teknik şartname süreçlerini saha diliyle anlatır. Her fideri tamamla, XP topla, rozet kazan.
+      </p>
+    </div>
+    <div class="diagram-card">
+      <svg viewBox="0 0 420 170" width="100%" height="auto">
+        <!-- substation -->
+        <g stroke="#3a5266" stroke-width="1.5" fill="none">
+          <line x1="20" y1="85" x2="80" y2="85"/>
+          <line x1="80" y1="70" x2="80" y2="100"/>
+          <line x1="90" y1="70" x2="90" y2="100"/>
+          <line x1="80" y1="85" x2="90" y2="85" stroke-dasharray="0"/>
+        </g>
+        <text x="20" y="60" fill="#8ba0b3" font-family="IBM Plex Mono" font-size="9">TM (İNDİRİCİ MERKEZ)</text>
+
+        <line x1="90" y1="85" x2="130" y2="85" stroke="#ffb627" stroke-width="2"/>
+
+        <!-- kesici sembolü -->
+        <rect x="127" y="76" width="14" height="18" rx="2" stroke="#ffb627" stroke-width="1.4" fill="#101e2a"/>
+        <text x="122" y="102" fill="#ffb627" font-family="IBM Plex Mono" font-size="7">KESİCİ</text>
+
+        <line x1="141" y1="85" x2="160" y2="85" stroke="#ffb627" stroke-width="2"/>
+
+        <!-- ayırıcı sembolü (açık bıçak) -->
+        <line x1="160" y1="85" x2="160" y2="85" stroke="#ffb627" stroke-width="1.4"/>
+        <line x1="160" y1="85" x2="172" y2="72" stroke="#ffb627" stroke-width="1.6"/>
+        <circle cx="160" cy="85" r="2" fill="#ffb627"/>
+        <text x="150" y="66" fill="#ffb627" font-family="IBM Plex Mono" font-size="7">AYIRICI</text>
+
+        <line x1="160" y1="85" x2="190" y2="85" stroke="#ffb627" stroke-width="2"/>
+        <circle cx="118" cy="85" r="3" fill="#ffb627">
+          <animate attributeName="cx" values="95;185;95" dur="3.2s" repeatCount="indefinite"/>
+        </circle>
+        <text x="93" y="76" fill="#ffb627" font-family="IBM Plex Mono" font-size="8">FİDER (OG)</text>
+
+        <!-- transformer -->
+        <circle cx="200" cy="85" r="11" stroke="#59c3c9" stroke-width="1.5" fill="none"/>
+        <circle cx="212" cy="85" r="11" stroke="#59c3c9" stroke-width="1.5" fill="none"/>
+        <text x="188" y="112" fill="#8ba0b3" font-family="IBM Plex Mono" font-size="9">DAĞITIM TRAFOSU</text>
+
+        <!-- parafudur sembolü -->
+        <line x1="206" y1="63" x2="206" y2="73" stroke="#e14b3d" stroke-width="1.3"/>
+        <path d="M203 63 L206 57 L209 63" stroke="#e14b3d" stroke-width="1.3" fill="none"/>
+        <text x="192" y="52" fill="#e14b3d" font-family="IBM Plex Mono" font-size="6.5">PARAFUDUR</text>
+
+        <line x1="223" y1="85" x2="320" y2="85" stroke="#4caf7d" stroke-width="2"/>
+        <!-- sayaç sembolü -->
+        <circle cx="300" cy="85" r="8" stroke="#4caf7d" stroke-width="1.3" fill="#101e2a"/>
+        <line x1="300" y1="85" x2="303" y2="80" stroke="#4caf7d" stroke-width="1.1"/>
+        <text x="288" y="102" fill="#4caf7d" font-family="IBM Plex Mono" font-size="7">SAYAÇ</text>
+        <circle cx="248" cy="85" r="3" fill="#4caf7d">
+          <animate attributeName="cx" values="228;292;228" dur="2.4s" repeatCount="indefinite"/>
+        </circle>
+        <text x="230" y="76" fill="#4caf7d" font-family="IBM Plex Mono" font-size="8">AG HAT (0.4kV)</text>
+
+        <!-- house -->
+        <g stroke="#8ba0b3" stroke-width="1.5" fill="none">
+          <rect x="330" y="70" width="34" height="26"/>
+          <path d="M328 70 L347 55 L366 70"/>
+        </g>
+        <text x="322" y="112" fill="#8ba0b3" font-family="IBM Plex Mono" font-size="9">SAYAÇ / ABONE</text>
+      </svg>
+      <div class="diagram-caption">CANLI ENERJİ AKIŞI — SEMBOLİK GÖSTERİM</div>
+    </div>
+  </div>
+</section>
+
+<div class="rank-panel">
+  <div class="rank-bar">
+    <div class="rank-title mono" id="rank-title-full">ÇIRAK</div>
+    <div class="rank-track"><div class="rank-fill" id="rank-fill"></div></div>
+    <div class="mono" style="font-size:12px;color:var(--muted);" id="rank-text">0 / 400 XP</div>
+  </div>
+</div>
+
+<section class="symbol-section">
+  <div class="symbol-section-head">
+    <div>
+      <div class="eyebrow">SEMBOL KÜTÜPHANESİ</div>
+      <h3>Tek Hat Şemasında Kullanılan Ekipman Sembolleri</h3>
+    </div>
+    <div class="symbol-note">Sadeleştirilmiş şematik gösterimler — saha panolarındaki gerçek IEC/ANSI sembollerinin sözlü karşılığıdır.</div>
+  </div>
+  <div class="symbol-grid" id="symbol-grid"></div>
+</section>
+
+<nav class="feeders">
+  <div class="feeders-label mono">MODÜL SEÇİMİ — FİDER PANOSU</div>
+  <div class="feeder-row" id="feeder-row"></div>
+</nav>
+
+<main id="main"></main>
+
+<section class="cert-section" id="cert-section"></section>
+
+<footer>
+  <p>İlerlemen tarayıcı oturumunda otomatik kaydedilir.</p>
+  <button class="reset-btn" id="reset-btn">İLERLEMEYİ SIFIRLA</button>
+  <p style="margin-top:14px; color:var(--muted-2);">Geliştirici: <span style="color:var(--amber);">Enes BOZ</span></p>
+</footer>
+
+<script>
+/* ================= SEMBOL KÜTÜPHANESİ ================= */
+const SYMBOL_DEFS = {
+  kesici:{ name:"Kesici (Breaker)", desc:"Yük ve kısa devre akımını güvenle açıp kapatabilir.",
+    svg:`<line x1="30" y1="6" x2="30" y2="22" stroke="var(--amber)" stroke-width="2"/>
+         <rect x="20" y="22" width="20" height="18" rx="3" stroke="var(--amber)" stroke-width="2" fill="none"/>
+         <line x1="30" y1="40" x2="30" y2="56" stroke="var(--amber)" stroke-width="2"/>` },
+  ayirici:{ name:"Ayırıcı (Disconnector)", desc:"Sadece yüksüz hatta açılır; görünür açıklık sağlar.",
+    svg:`<line x1="30" y1="6" x2="30" y2="26" stroke="var(--amber)" stroke-width="2"/>
+         <circle cx="30" cy="26" r="2.5" fill="var(--amber)"/>
+         <line x1="30" y1="26" x2="45" y2="12" stroke="var(--amber)" stroke-width="2"/>
+         <line x1="30" y1="46" x2="30" y2="56" stroke="var(--amber)" stroke-width="2"/>
+         <line x1="30" y1="26" x2="30" y2="46" stroke="var(--amber)" stroke-width="2" stroke-dasharray="2 3"/>` },
+  yukayirici:{ name:"Yük Ayırıcısı (LBS)", desc:"Sınırlı yük akımını keser; kısa devre akımını kesemez.",
+    svg:`<line x1="30" y1="6" x2="30" y2="24" stroke="var(--amber)" stroke-width="2"/>
+         <circle cx="30" cy="24" r="2.5" fill="var(--amber)"/>
+         <line x1="30" y1="24" x2="44" y2="12" stroke="var(--amber)" stroke-width="2"/>
+         <line x1="38" y1="14" x2="44" y2="16" stroke="var(--danger)" stroke-width="1.5"/>
+         <line x1="30" y1="24" x2="30" y2="56" stroke="var(--amber)" stroke-width="2" stroke-dasharray="2 3"/>` },
+  parafudur:{ name:"Parafudur (Sürge Arrester)", desc:"Aşırı gerilim darbelerini toprağa aktararak ekipmanı korur.",
+    svg:`<line x1="30" y1="6" x2="30" y2="20" stroke="var(--danger)" stroke-width="2"/>
+         <path d="M23 20 L37 20 L27 34 L37 34" stroke="var(--danger)" stroke-width="2" fill="none"/>
+         <line x1="30" y1="34" x2="30" y2="44" stroke="var(--danger)" stroke-width="2"/>
+         <line x1="18" y1="50" x2="42" y2="50" stroke="var(--muted)" stroke-width="2"/>
+         <line x1="22" y1="55" x2="38" y2="55" stroke="var(--muted)" stroke-width="1.4"/>
+         <line x1="26" y1="59" x2="34" y2="59" stroke="var(--muted)" stroke-width="1"/>
+         <line x1="30" y1="44" x2="30" y2="50" stroke="var(--danger)" stroke-width="2"/>` },
+  sigorta:{ name:"Sigorta (Fuse)", desc:"Tek kullanımlık aşırı akım koruması; atınca değiştirilir.",
+    svg:`<line x1="30" y1="6" x2="30" y2="20" stroke="var(--amber)" stroke-width="2"/>
+         <rect x="22" y="20" width="16" height="24" rx="3" stroke="var(--amber)" stroke-width="2" fill="none"/>
+         <line x1="30" y1="44" x2="30" y2="56" stroke="var(--amber)" stroke-width="2"/>` },
+  topraklama:{ name:"Topraklama Anahtarı", desc:"Bakım öncesi hattı güvenle topraklar.",
+    svg:`<line x1="30" y1="6" x2="30" y2="26" stroke="var(--amber)" stroke-width="2"/>
+         <circle cx="30" cy="26" r="2.5" fill="var(--amber)"/>
+         <line x1="30" y1="26" x2="14" y2="40" stroke="var(--amber)" stroke-width="2"/>
+         <line x1="6" y1="46" x2="22" y2="46" stroke="var(--muted)" stroke-width="2"/>
+         <line x1="9" y1="51" x2="19" y2="51" stroke="var(--muted)" stroke-width="1.4"/>
+         <line x1="12" y1="55" x2="16" y2="55" stroke="var(--muted)" stroke-width="1"/>` },
+  ct:{ name:"Akım Trafosu (CT)", desc:"Yüksek akımları ölçüm cihazlarının okuyabileceği seviyeye indirger.",
+    svg:`<line x1="6" y1="30" x2="54" y2="30" stroke="var(--cyan)" stroke-width="2"/>
+         <circle cx="30" cy="30" r="13" stroke="var(--cyan)" stroke-width="2" fill="none"/>` },
+  vt:{ name:"Gerilim Trafosu (VT/PT)", desc:"Yüksek gerilimi ölçüm cihazları için düşük seviyeye indirger.",
+    svg:`<circle cx="24" cy="30" r="9" stroke="var(--cyan)" stroke-width="1.8" fill="none"/>
+         <circle cx="36" cy="30" r="9" stroke="var(--cyan)" stroke-width="1.8" fill="none"/>` },
+  trafo:{ name:"Güç / Dağıtım Trafosu", desc:"Gerilim seviyesini bir sargıdan diğerine dönüştürür.",
+    svg:`<line x1="30" y1="4" x2="30" y2="16" stroke="var(--muted)" stroke-width="1.6"/>
+         <circle cx="24" cy="28" r="12" stroke="var(--cyan)" stroke-width="2" fill="none"/>
+         <circle cx="38" cy="28" r="12" stroke="var(--cyan)" stroke-width="2" fill="none"/>
+         <line x1="30" y1="46" x2="30" y2="56" stroke="var(--muted)" stroke-width="1.6"/>` },
+  direk:{ name:"Direk (Pole)", desc:"İletken ve ekipmanları taşıyan dikey destek yapısı.",
+    svg:`<line x1="30" y1="6" x2="30" y2="56" stroke="var(--muted)" stroke-width="2.5"/>
+         <line x1="12" y1="14" x2="48" y2="14" stroke="var(--muted)" stroke-width="2.5"/>
+         <line x1="30" y1="18" x2="16" y2="14" stroke="var(--muted)" stroke-width="1.4"/>
+         <line x1="30" y1="18" x2="44" y2="14" stroke="var(--muted)" stroke-width="1.4"/>` },
+  izolator:{ name:"İzolatör", desc:"İletkeni direkten elektriksel olarak yalıtarak mekanik destek sağlar.",
+    svg:`<line x1="30" y1="8" x2="30" y2="52" stroke="var(--muted)" stroke-width="1.6"/>
+         <ellipse cx="30" cy="18" rx="12" ry="5" stroke="var(--amber)" stroke-width="1.8" fill="none"/>
+         <ellipse cx="30" cy="28" rx="12" ry="5" stroke="var(--amber)" stroke-width="1.8" fill="none"/>
+         <ellipse cx="30" cy="38" rx="12" ry="5" stroke="var(--amber)" stroke-width="1.8" fill="none"/>` },
+  sayac:{ name:"Sayaç (Elektrik)", desc:"Tüketilen enerjiyi ölçer; akıllı sayaçlarda uzaktan iletişim de sağlar.",
+    svg:`<circle cx="30" cy="30" r="20" stroke="var(--ok)" stroke-width="2" fill="none"/>
+         <line x1="30" y1="30" x2="30" y2="17" stroke="var(--ok)" stroke-width="2"/>
+         <line x1="30" y1="30" x2="40" y2="30" stroke="var(--ok)" stroke-width="2"/>` },
+  fpi:{ name:"Arıza Gösterge (FPI)", desc:"Arıza akımı geçtiğinde sinyal vererek arıza yerinin hızlı tespitini sağlar.",
+    svg:`<line x1="6" y1="30" x2="54" y2="30" stroke="var(--muted)" stroke-width="2"/>
+         <rect x="22" y="20" width="16" height="20" rx="3" stroke="var(--cyan)" stroke-width="2" fill="none"/>
+         <circle cx="30" cy="30" r="3" fill="var(--danger)"><animate attributeName="opacity" values="1;0.2;1" dur="1.4s" repeatCount="indefinite"/></circle>` },
+  rtu:{ name:"RTU / Uzaktan Kumanda", desc:"Saha ekipmanının SCADA üzerinden uzaktan izlenip kumanda edilmesini sağlar.",
+    svg:`<rect x="16" y="24" width="28" height="22" rx="3" stroke="var(--cyan)" stroke-width="2" fill="none"/>
+         <line x1="30" y1="24" x2="30" y2="10" stroke="var(--cyan)" stroke-width="1.6"/>
+         <circle cx="30" cy="8" r="2.5" fill="var(--cyan)"/>` }
+};
+
+function iconSVG(key, size){
+  const d = SYMBOL_DEFS[key];
+  if(!d) return '';
+  return `<svg viewBox="0 0 60 60" width="${size||52}" height="${size||52}" xmlns="http://www.w3.org/2000/svg">${d.svg}</svg>`;
+}
+
+function renderSymbolLibrary(){
+  const grid = document.getElementById('symbol-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  Object.keys(SYMBOL_DEFS).forEach(key=>{
+    const d = SYMBOL_DEFS[key];
+    const card = document.createElement('div');
+    card.className = 'symbol-card reveal';
+    card.innerHTML = `${iconSVG(key,52)}<div class="sym-name">${d.name}</div><div class="sym-desc">${d.desc}</div>`;
+    grid.appendChild(card);
+  });
+  attachReveal();
+}
+
+/* ================= UX GELİŞTİRMELERİ ================= */
+let revealObserver = null;
+function attachReveal(){
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+    return;
+  }
+  if(!revealObserver){
+    revealObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12});
+  }
+  document.querySelectorAll('.reveal:not(.in)').forEach(el=> revealObserver.observe(el));
+}
+
+/* Boot sekansı */
+function runBootSequence(){
+  const overlay = document.getElementById('boot-overlay');
+  const fill = document.getElementById('boot-fill');
+  if(!overlay || !fill) return;
+  const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){ overlay.classList.add('hidden'); return; }
+  let pct = 0;
+  const iv = setInterval(()=>{
+    pct += Math.random()*22 + 8;
+    if(pct >= 100){
+      pct = 100;
+      fill.style.width = pct + '%';
+      clearInterval(iv);
+      setTimeout(()=> overlay.classList.add('hidden'), 250);
+      return;
+    }
+    fill.style.width = pct + '%';
+  }, 140);
+}
+
+/* Tema değiştirme (Gece Vardiyası / Gündüz Vardiyası) */
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('theme-label').textContent = theme === 'day' ? 'GÜNDÜZ VARDİYASI' : 'GECE VARDİYASI';
+  try{ localStorage.setItem('yedas-theme', theme); }catch(e){}
+}
+function initTheme(){
+  let saved = 'night';
+  try{ saved = localStorage.getItem('yedas-theme') || 'night'; }catch(e){}
+  applyTheme(saved);
+  document.getElementById('theme-toggle').onclick = ()=>{
+    const current = document.documentElement.getAttribute('data-theme');
+    applyTheme(current === 'day' ? 'night' : 'day');
+  };
+}
+
+/* Toast bildirimleri */
+function showToast(msg){
+  const holder = document.getElementById('toast-holder');
+  if(!holder) return;
+  const t = document.createElement('div');
+  t.className = 'toast mono';
+  t.textContent = msg;
+  holder.appendChild(t);
+  setTimeout(()=>{ t.remove(); }, 3900);
+}
+
+/* XP sayaç animasyonu */
+let displayedXP = 0;
+function animateXP(target){
+  const el = document.getElementById('stat-xp');
+  if(!el) return;
+  const start = displayedXP;
+  const diff = target - start;
+  if(diff === 0) return;
+  const duration = 500;
+  const t0 = performance.now();
+  function step(now){
+    const p = Math.min(1, (now - t0) / duration);
+    const val = Math.round(start + diff * p);
+    el.textContent = val;
+    if(p < 1) requestAnimationFrame(step);
+    else displayedXP = target;
+  }
+  requestAnimationFrame(step);
+}
+
+/* ================= DATA ================= */
+const MODULES = [
+{
+  id:"m1", code:"FİDER 01", title:"Temel Kavramlar: AG / YG ve Güç Üçgeni",
+  lesson:`
+    <h4>Gerilim Sınıfları</h4>
+    <p><b>AG (Alçak Gerilim):</b> Etkin değeri 1000 volt ya da 1000 voltun altında olan fazlar arası gerilim (TEDAŞ Teknik Şartname Yönergesi, Madde 4/a). Türkiye'de yaygın AG seviyesi <span class="formula">0.4 kV</span>'tur.</p>
+    <p><b>YG (Yüksek Gerilim):</b> Etkin değeri 1000 volt üzerinde olan fazlar arası gerilim (Madde 4/j). Dağıtımda sık görülen seviyeler <span class="formula">15.8 kV</span>, <span class="formula">34.5 kV</span>; iletimde <span class="formula">154 kV</span> ve <span class="formula">380 kV</span>.</p>
+    <h4>Güç Üçgeni</h4>
+    <ul>
+      <li>Görünür güç: <span class="formula">S = √3 · V · I</span> (üç fazlı dengeli sistemde, VA)</li>
+      <li>Aktif güç: <span class="formula">P = S · cosφ</span> (W) — işe yarayan güç</li>
+      <li>Reaktif güç: <span class="formula">Q = S · sinφ</span> (VAr) — manyetik alan için gerekli, iş yapmaz</li>
+    </ul>
+    <p>Güç faktörü (cosφ) düştükçe aynı aktif gücü taşımak için daha fazla akım çekilir; bu da hat kayıplarını ve iletken/trafo yükünü artırır.</p>
+  `,
+  quiz:[
+    {q:"TEDAŞ yönergesine göre AG'nin tanımı hangisidir?", opts:["1000 V ve altı fazlar arası gerilim","1000 V üzeri fazlar arası gerilim","Sadece 0.4 kV gerilim","230 V faz-nötr gerilim"], correct:0, explain:"Madde 4/a: AG, etkin değeri 1000 volt ya da altında olan fazlar arası gerilimdir."},
+    {q:"34.5 kV'luk bir hat yönergeye göre hangi sınıftadır?", opts:["AG","YG","Ne AG ne YG","Sayaç gerilimi"], correct:1, explain:"1000 V üzeri olduğu için YG (Yüksek Gerilim) sınıfına girer."},
+    {q:"Güç faktörü (cosφ) düşük olduğunda ne olur?", opts:["Kayıplar azalır","Aynı aktif güç için daha fazla akım çekilir, kayıplar artar","Gerilim otomatik yükselir","Trafo empedansı düşer"], correct:1, explain:"Düşük cosφ, aynı P için daha yüksek akım demektir; bu da I²R kayıplarını artırır."},
+    {q:"Üç fazlı dengeli sistemde görünür güç formülü hangisidir?", opts:["S = V·I","S = √3·V·I","S = 3·V·I²","S = V²/R"], correct:1, explain:"Üç fazlı dengeli sistemlerde görünür güç S = √3 · V(hat) · I(hat) olarak hesaplanır."},
+    {q:"cosφ = 1 olduğunda reaktif güç (Q) kaçtır?", opts:["Maksimum","S ile aynı","0","Negatif sonsuz"], correct:2, explain:"cosφ=1 iken sinφ=0 olur, dolayısıyla Q=0; tüm güç aktiftir."}
+  ]
+},
+{
+  id:"m2", code:"FİDER 02", title:"Dağıtım Sistemi ve Şebeke Topolojisi",
+  lesson:`
+    <h4>Enerjinin Yolculuğu</h4>
+    <p>İndirici merkez (trafo merkezi) → <b>Fider</b> (YG çıkış hattı, saha dilinde "fider" olarak anılır) → Dağıtım trafosu (YG/AG) → AG şebeke → Bina giriş noktası / sayaç.</p>
+    <p><b>Dağıtım tesisi</b> tanımı (Madde 4/c): iletim tesislerinin bittiği noktadan, AG seviyesinden bağlı tüketicilerin yapı giriş noktalarına kadar (bina giriş ve sayaç hariç) olan tesis ve teçhizat.</p>
+    <h4>Şebeke Topolojileri</h4>
+    <ul>
+      <li><b>Radyal:</b> Tek yönlü besleme, ucuz ve basit kurulum; ancak bir arızada beslediği tüm bölge etkilenir.</li>
+      <li><b>Halka (loop):</b> İki taraftan besleme imkânı; bir kolda arıza olsa da devre kesip diğer koldan beslemeye devam edilebilir, süreklilik yüksektir.</li>
+      <li><b>Şehir merkezi / ring (mesh):</b> Yüksek yoğunluklu bölgelerde güvenilirliği artırmak için kullanılır, işletmesi daha karmaşıktır.</li>
+    </ul>
+  `,
+  quiz:[
+    {q:"Saha dilinde 'fider' ne anlama gelir?", opts:["Sayaç tipi","Trafo merkezinden çıkan YG hattı","Bina giriş kablosu","Bir arıza kodu"], correct:1, explain:"Fider, indirici merkezden çıkan ve bölgeyi besleyen YG dağıtım hattıdır."},
+    {q:"Radyal şebekenin temel dezavantajı nedir?", opts:["Kurulum maliyeti çok yüksektir","Bir arızada beslenen tüm bölge etkilenir","Sadece YG'de kullanılabilir","Trafo gerektirmez"], correct:1, explain:"Radyal yapıda tek yönlü besleme olduğundan arıza anında alternatif besleme yoktur."},
+    {q:"Yönergeye göre 'dağıtım tesisi' tanımı nereye kadar uzanır?", opts:["Trafo merkezine kadar","Bina giriş ve sayaç dahil her yere","AG bağlı tüketicilerin yapı giriş noktasına kadar (bina girişi hariç)","Sadece OG hatlarla sınırlıdır"], correct:2, explain:"Madde 4/c: dağıtım tesisi, bina giriş ve sayaç arası hariç, yapı giriş noktasına kadar olan tesisi kapsar."},
+    {q:"Tipik bir dağıtım trafosu gerilim oranı hangisidir?", opts:["380/220 kV","34.5/0.4 kV","0.4/0.4 kV","154/34.5 kV"], correct:1, explain:"34.5/0.4 kV (veya 15.8/0.4 kV), Türkiye'de yaygın dağıtım trafosu oranlarındandır."},
+    {q:"Halka (loop) şebekenin en önemli avantajı nedir?", opts:["Daha az iletken kullanımı","İki taraflı besleme ile süreklilik artışı","Trafo ihtiyacını ortadan kaldırması","Kesici gerektirmemesi"], correct:1, explain:"Bir kolda arıza olduğunda diğer koldan beslemeye devam edilerek kesinti süresi kısaltılır."}
+  ]
+},
+{
+  id:"m3", code:"FİDER 03", title:"Transformatörler",
+  lesson:`
+    <h4>Temel Bağıntılar</h4>
+    <p>Sarım oranı: <span class="formula">a = V1/V2 = N1/N2</span>. Üç fazlı trafo gücü: <span class="formula">S = √3 · V · I</span>.</p>
+    <h4>Vektör Grubu</h4>
+    <p>Dağıtım trafolarında en yaygın bağlantı <b>Dyn11</b>'dir: primer üçgen (D), sekonder yıldız-nötr (yn), sekonder gerilim primere göre 11. saat (330°) kaydırılmıştır. Yıldız-nötr çıkışı, AG tarafında hem faz hem nötr hattı almayı mümkün kılar.</p>
+    <h4>Empedans ve Paralel Çalışma</h4>
+    <ul>
+      <li>Trafo etiketindeki <b>%Z</b> (kısa devre empedansı) değeri, arıza anında akan kısa devre akımını sınırlar; %Z yüksekse kısa devre akımı düşer.</li>
+      <li>İki trafoyu paralel çalıştırmak için: aynı vektör grubu, aynı gerilim oranı ve birbirine yakın %Z değerleri gereklidir. Aksi halde trafolar arasında dolaşım akımı oluşur.</li>
+    </ul>
+  `,
+  quiz:[
+    {q:"Dağıtım trafolarında en yaygın kullanılan vektör grubu hangisidir?", opts:["Yy0","Dyn11","Dd0","Yz5"], correct:1, explain:"Dyn11, üçgen primer + yıldız-nötr sekonder yapısıyla AG tarafında nötr çıkışı sağladığı için dağıtımda yaygındır."},
+    {q:"Bir trafonun %Z (empedans) değeri yüksekse kısa devre akımı nasıl etkilenir?", opts:["Artar","Azalır","Değişmez","Sıfırlanır"], correct:1, explain:"Empedans, arıza akımını sınırlayan bir direnç/reaktans etkisi yaratır; %Z yüksekse kısa devre akımı düşer."},
+    {q:"İki trafoyu paralel çalıştırmak için hangi şart GEREKLİ DEĞİLDİR?", opts:["Aynı vektör grubu","Aynı gerilim oranı","Yakın %Z değerleri","Aynı üretici firma"], correct:3, explain:"Üretici firma aynı olmak zorunda değildir; teknik olarak vektör grubu, gerilim oranı ve empedansların uyumu esastır."},
+    {q:"Üç fazlı trafo gücü formülü hangisidir?", opts:["S = V·I","S = √3·V·I","S = V/I","S = 3·V/I"], correct:1, explain:"Üç fazlı sistemlerde görünür güç S = √3 · V(hat) · I(hat) şeklinde hesaplanır."},
+    {q:"Sarım oranı (a = N1/N2) neyi belirler?", opts:["Trafo ağırlığını","Primer/sekonder gerilim dönüşüm oranını","Yağ miktarını","Soğutma tipini"], correct:1, explain:"Sarım oranı, primer ve sekonder sargılar arasındaki gerilim dönüşüm oranını belirler."}
+  ]
+},
+{
+  id:"m4", code:"FİDER 04", title:"Kısa Devre ve Arıza Analizi",
+  lesson:`
+    <h4>Simetrik Bileşenler Yöntemi</h4>
+    <p>Dengesiz üç fazlı bir arıza sistemi, Fortescue teoremi ile üç ayrı dengeli devreye ayrıştırılabilir: <b>pozitif</b>, <b>negatif</b> ve <b>sıfır bileşen</b>. Bu yöntem, dengesiz arızaların (tek faz-toprak, faz-faz vb.) analizini büyük ölçüde basitleştirir.</p>
+    <h4>Arıza Tipleri</h4>
+    <ul>
+      <li><b>Üç fazlı simetrik arıza:</b> En şiddetli fakat sahada en nadir görülen arızadır; analizinde sadece pozitif bileşen devresi yeterlidir.</li>
+      <li><b>Tek faz-toprak arızası:</b> Dağıtım şebekelerinde en sık görülen arıza tipidir; üç bileşen devresinin seri bağlanmasıyla çözülür.</li>
+      <li><b>Faz-faz ve çift faz-toprak arızaları:</b> Ara şiddet seviyesindedir.</li>
+    </ul>
+    <h4>Per-Unit Sistem</h4>
+    <p>Farklı gerilim seviyelerindeki (AG/YG) ekipmanları ortak bir referans üzerinden karşılaştırmayı kolaylaştıran normalize edilmiş bir hesaplama sistemidir; trafo oranlarını hesaba katma zorunluluğunu ortadan kaldırır.</p>
+  `,
+  quiz:[
+    {q:"Dağıtım şebekelerinde en sık görülen arıza tipi hangisidir?", opts:["Üç fazlı simetrik arıza","Tek faz-toprak arızası","Faz-faz arızası","Trafo iç arızası"], correct:1, explain:"Tek faz-toprak arızaları, özellikle havai hatlarda, sahada en sık karşılaşılan arıza türüdür."},
+    {q:"Simetrik bileşenler yöntemi hangi durumlarda kullanılır?", opts:["Sadece dengeli sistemlerde","Dengesiz (asimetrik) arızaların analizinde","Sadece DC devrelerde","Sadece trafo testlerinde"], correct:1, explain:"Yöntem, dengesiz üç fazlı arızaları pozitif/negatif/sıfır bileşenlere ayırarak çözülebilir hale getirir."},
+    {q:"Per-unit sistem kullanmanın temel avantajı nedir?", opts:["Gerilim seviyelerini görmezden gelerek karşılaştırma kolaylığı sağlar","Sadece görsellik katar","Akımı sıfırlar","Sadece AG sistemlerde geçerlidir"], correct:0, explain:"Per-unit sistem, farklı gerilim seviyelerindeki büyüklükleri ortak bir referansa göre normalize eder."},
+    {q:"Üç fazlı simetrik arızanın analizinde hangi bileşen devresi kullanılır?", opts:["Sadece sıfır bileşen","Sadece negatif bileşen","Sadece pozitif bileşen","Üçü birden seri bağlanır"], correct:2, explain:"Üç fazlı arıza tamamen dengeli olduğundan yalnızca pozitif bileşen devresi yeterlidir."},
+    {q:"Kısa devre akımı büyüklüğü neden kesici seçiminde kritiktir?", opts:["Kesicinin rengini belirler","Kesicinin kesme kapasitesini (kA) aşmaması gerekir","Sadece maliyeti etkiler","Hiçbir önemi yoktur"], correct:1, explain:"Kesici, hesaplanan maksimum kısa devre akımını güvenle kesebilecek kapasitede seçilmelidir."}
+  ]
+},
+{
+  id:"m5", code:"FİDER 05", title:"Koruma Koordinasyonu",
+  lesson:`
+    <h4>Kesme ve Ayırma Ekipmanları — Kritik Fark</h4>
+    <p><b>Ayırıcı (disconnector):</b> Yalnızca yüksüz hattı izole eder ve görünür açıklık sağlar. <b style="color:var(--danger)">Yük altında kesinlikle açılamaz.</b> Bu, sahada uyulması zorunlu en temel güvenlik kurallarından biridir.</p>
+    <p><b>Kesici (breaker):</b> Yük altında açma/kapama yapabilir; bazı tipleri (recloser) arıza sonrası otomatik olarak tekrar kapanabilir — özellikle geçici (kalıcı olmayan) arızalarda faydalıdır.</p>
+    <p><b>Sigorta (fuse):</b> Ucuz, hızlı ama tek kullanımlıktır; atınca değiştirilmesi gerekir.</p>
+    <h4>Selektivite (Koordinasyon)</h4>
+    <p>Bir arıza oluştuğunda, arızaya en yakın koruma cihazı devreyi açmalı, üst kademedeki (yukarı akış) koruma cihazları ise devrede kalmalıdır. Böylece kesinti en dar bölgeyle sınırlı tutulur. Bu, zaman-akım koordinasyon eğrileriyle sağlanır.</p>
+    <h4>Bakım Öncesi Topraklama</h4>
+    <p>Bakım öncesi hat, topraklama bıçağı/anahtarı ile güvenli şekilde topraklanarak olası geri beslemelere ve indüklenen gerilimlere karşı korunur.</p>
+  `,
+  quiz:[
+    {q:"Bir ayırıcı yük altındayken açılabilir mi?", opts:["Evet, her zaman açılabilir","Hayır, sadece yüksüz hatta açılır","Sadece AG'de açılabilir","Sadece acil durumda açılabilir"], correct:1, explain:"Ayırıcılar yük kesme özelliğine sahip değildir; yük altında açılması ark oluşumuna ve ciddi kazalara yol açabilir."},
+    {q:"Selektivite (koordinasyon) neyi ifade eder?", opts:["Tüm kesicilerin aynı anda açılmasını","Arızaya en yakın cihazın açıp üst kademelerin devrede kalmasını","Sigortaların hiç atmamasını","Trafoların paralel çalışmasını"], correct:1, explain:"Doğru koordinasyon, kesintiyi arıza bölgesiyle sınırlı tutarak geri kalan şebekeyi enerjili bırakır."},
+    {q:"Recloser (tekrar kapamalı kesici) en çok hangi arıza tipinde faydalıdır?", opts:["Kalıcı arızalarda","Geçici (kalıcı olmayan) arızalarda","Sadece trafo arızalarında","Sadece sayaç arızalarında"], correct:1, explain:"Rüzgarla dal teması gibi geçici arızalarda otomatik tekrar kapama, kesintiyi kısaltır."},
+    {q:"Bakım öncesi hattı güvenli hale getirmek için hangi ekipman kullanılır?", opts:["Sigorta","Topraklama bıçağı/anahtarı","Ayırıcı bıçağı tek başına","Gerilim regülatörü"], correct:1, explain:"Topraklama anahtarı, olası geri besleme veya indüklenen gerilimlere karşı hattı güvenli hale getirir."},
+    {q:"Sigorta ile kesici arasındaki temel fark nedir?", opts:["Sigorta tekrar kullanılabilir, kesici kullanılamaz","Sigorta atınca değişir, kesici tekrar kapatılabilir","İkisi de aynı işi görür","Kesici sadece AG'de kullanılır"], correct:1, explain:"Sigorta bir kez devreye girdiğinde değiştirilmesi gerekirken, kesiciler manuel veya otomatik olarak tekrar kapatılabilir."}
+  ]
+},
+{
+  id:"m6", code:"FİDER 06", title:"İş Güvenliği ve Topraklama",
+  lesson:`
+    <h4>Beş Altın Kural (Saha Çalışma Güvenliği)</h4>
+    <ol style="padding-left:20px;color:#cbd9e3;font-size:14.5px;">
+      <li><b>Ayırma / İzolasyon:</b> Çalışılacak hat, tüm besleme noktalarından ayrılır.</li>
+      <li><b>Kilitleme ve Etiketleme (LOTO):</b> Ayırma noktaları kilitlenir, üzerine "çalışma var" etiketi asılır.</li>
+      <li><b>Gerilim Yokluğunun Kontrolü:</b> Uygun gerilim dedektörü ile her fazda gerilim olmadığı teyit edilir.</li>
+      <li><b>Kısa Devre ve Topraklama:</b> Hat, olası geri beslemelere karşı topraklanır ve kısa devre edilir.</li>
+      <li><b>Yakın Bölgenin İşaretlenmesi:</b> Enerjili kalan komşu bölümler bariyer/levha ile işaretlenir.</li>
+    </ol>
+    <h4>Topraklama ve Adım Gerilimi</h4>
+    <p>Topraklama direncinin düşük olması, arıza akımının güvenli şekilde toprağa aktarılmasını sağlar. <b>Adım gerilimi</b>, bir arıza anında toprak yüzeyinde farklı noktalar arasında oluşan gerilim farkıdır ve saha personeli için ciddi bir risktir; bu nedenle arıza bölgesine belirli bir mesafeden yaklaşılması ve uygun KKD (yalıtkan eldiven, izole ayakkabı vb.) kullanılması gerekir.</p>
+  `,
+  quiz:[
+    {q:"Beş Altın Kural'ın ilk adımı nedir?", opts:["Topraklama","Ayırma / İzolasyon","Etiketleme","Bariyer kurma"], correct:1, explain:"Güvenli çalışmanın ilk adımı, hattın tüm besleme noktalarından ayrılmasıdır."},
+    {q:"Çalışmaya başlamadan önce gerilim yokluğu nasıl teyit edilir?", opts:["Elle dokunarak","Uygun gerilim dedektörü ile her fazda ölçüm yaparak","Sadece görsel kontrolle","Tahmin ederek"], correct:1, explain:"Gerilim yokluğu, kalibre edilmiş bir gerilim dedektörüyle her fazda ayrı ayrı doğrulanmalıdır."},
+    {q:"Adım gerilimi nedir?", opts:["Trafo sarım gerilimi","Arıza anında toprak yüzeyinde farklı noktalar arasındaki gerilim farkı","Sayaç gösterge gerilimi","Sigortanın anma gerilimi"], correct:1, explain:"Adım gerilimi, arıza akımının toprağa yayılmasıyla oluşan yüzey potansiyel farkıdır; yürüyen kişi için tehlikelidir."},
+    {q:"Düşük topraklama direnci neden önemlidir?", opts:["Estetik nedenlerle","Arıza akımının güvenli şekilde toprağa aktarılmasını sağlar","Enerji faturasını düşürür","Sayacı hızlandırır"], correct:1, explain:"Düşük direnç, arıza akımının hızlı ve güvenli biçimde toprağa boşalmasını sağlayarak tehlikeli gerilimleri sınırlar."},
+    {q:"LOTO kısaltması sahada neyi ifade eder?", opts:["Kilitleme ve Etiketleme (Lock Out / Tag Out)","Yük Ölçüm Toleransı","Line Output Test Operation","Lokal Trafo Ölçümü"], correct:0, explain:"LOTO (Lock Out / Tag Out), ayırma noktalarının kilitlenip etiketlenmesi anlamına gelir."}
+  ]
+},
+{
+  id:"m7", code:"FİDER 07", title:"Teknik Şartname Süreci (TEDAŞ Yönergesi)",
+  lesson:`
+    <h4>Amaç ve Kapsam</h4>
+    <p>Yönerge, TEDAŞ mülkiyetindeki AG/YG elektrik dağıtım tesislerinde kullanılan malzeme ve donanımlara ait teknik şartnamelerin hazırlanması, güncellenmesi, onaylanması ve yürürlükten kaldırılmasına ilişkin usul ve esasları belirler.</p>
+    <h4>Teknik Şartname Komisyonu</h4>
+    <ul>
+      <li>Komisyon en az <b>5</b>, en fazla <b>9</b> üyeden oluşur; bunların en az 2'si teknik şartname biriminden olmalıdır.</li>
+      <li>Yeni teknik şartnameler mutlaka komisyon marifetiyle hazırlanır; güncellemelerde komisyon kurulup kurulmayacağına teknik şartname birimi karar verir.</li>
+      <li>Komisyon kararlarının <b>oy birliği</b> ile alınması esastır; karşı görüşü olan üyeler gerekçesini rapora yazar.</li>
+    </ul>
+    <h4>İşaretleme Sistemi</h4>
+    <p>Örnek: <span class="formula">TEDAŞ.MLZ.001.04.94-10</span> — 001: sıra numarası, 04: revizyon sayısı, 94: ilk yayım yılı, 10: son güncelleme yılı.</p>
+    <h4>Marka/Model Yasağı</h4>
+    <p>Teknik şartnamelerde belirli bir marka, model veya menşei belirtilemez; ancak ulusal/uluslararası standart bulunmuyorsa "veya dengi" ifadesiyle örnek verilebilir.</p>
+  `,
+  quiz:[
+    {q:"Teknik şartname komisyonu en az kaç üyeden oluşur?", opts:["3","5","10","2"], correct:1, explain:"Madde 9: Komisyon en az 5, en fazla 9 üyeden oluşur."},
+    {q:"TEDAŞ.MLZ.001.04.94-10 örneğinde '04' neyi ifade eder?", opts:["İlk yayım yılını","Revizyon sayısını","Güncelleme yılını","Komisyon üye sayısını"], correct:1, explain:"Madde 7'ye göre bu alan, teknik şartnamede yapılan revizyon sayısını gösterir."},
+    {q:"Komisyon kararları esas olarak nasıl alınır?", opts:["Basit çoğunlukla","Oy birliği ile","Başkanın tek imzasıyla","Kura ile"], correct:1, explain:"Madde 10/c: hazırlanan nihai teknik şartnamelerin komisyonun oy birliği ile alınması esastır."},
+    {q:"Teknik şartnamede belirli bir marka/model belirtilebilir mi?", opts:["Her zaman serbesttir","Kesinlikle yasaktır, istisnası yoktur","Standart yoksa 'veya dengi' ifadesiyle örnek verilebilir","Sadece yerli üreticiler için serbesttir"], correct:2, explain:"Madde 5/5: standart bulunmaması halinde 'veya dengi' ifadesiyle marka/model belirtilebilir."},
+    {q:"Yeni bir teknik şartname kim tarafından hazırlanır?", opts:["Tek bir mühendis tarafından","Komisyon marifetiyle","Sadece Genel Müdür tarafından","Üretici firma tarafından"], correct:1, explain:"Madde 11/3: yeni teknik şartnameler komisyon marifetiyle hazırlanır."}
+  ]
+},
+{
+  id:"m9", code:"FİDER 08", title:"Saha Ekipmanları ve Teknolojiler",
+  lesson:`
+    <h4>Kesme / Ayırma Ekipmanları</h4>
+    <ul>
+      <li><b>Vakum Kesici (VCB):</b> Dağıtım şalt sahalarında yaygın; kontaklar vakumlu hazne içinde açılır, arkı hızlı söndürür.</li>
+      <li><b>SF6 Kesici:</b> Yalıtım ve ark söndürme için SF6 gazı kullanır; YG şebekelerde kompakt ve bakım aralığı uzun kesicilerdir.</li>
+      <li><b>Yük Ayırıcısı (LBS):</b> Sınırlı bir yük akımını kesebilir ama kısa devre akımını kesme kapasitesi yoktur — kesici ile karıştırılmamalıdır.</li>
+      <li><b>Parafudur (Sürge Arrester):</b> Yıldırım ve anahtarlama darbelerinde oluşan aşırı gerilimi toprağa aktararak ekipmanı korur.</li>
+    </ul>
+    <h4>Direk, İletken ve İzolatör Teknolojileri</h4>
+    <ul>
+      <li><b>İletkenler:</b> ACSR (çelik özlü alüminyum) ve AAAC (alüminyum alaşımlı) iletkenler, mekanik dayanım ve iletkenlik dengesine göre seçilir.</li>
+      <li><b>Direkler:</b> Beton, çelik (galvaniz) ve ahşap direk tipleri; bölgenin zemin/iklim koşullarına göre seçilir.</li>
+      <li><b>İzolatörler:</b> Post tip izolatörler OG hatlarda direğe sabit montaj için, süspansiyon (asma) tip izolatörler ise daha yüksek gerilim ve açıklıklarda kullanılır.</li>
+      <li><b>XLPE Kablolar:</b> Yer altı YG/AG hatlarında kullanılan çapraz bağlı polietilen yalıtımlı kablolar; havai hatlara göre görsel/güvenlik avantajı sağlar, ancak arıza yeri tespiti ve onarımı daha karmaşıktır.</li>
+    </ul>
+    <h4>Ölçüm, Otomasyon ve Akıllı Şebeke</h4>
+    <ul>
+      <li><b>Akıllı Sayaç (AMI):</b> Elektromekanik ve elektronik sayaçların ötesinde; uzaktan okuma, uzaktan kesme-açma ve anlık tüketim verisi sağlar.</li>
+      <li><b>Arıza Gösterge Cihazı (FPI):</b> Direk/kabloya takılan, arıza akımı geçtiğinde sinyal veren cihaz; arıza yerinin hızlı tespitini sağlayarak kesinti süresini kısaltır.</li>
+      <li><b>RTU ve SCADA:</b> Saha ekipmanlarının uzaktan izlenip kumanda edilmesini sağlayan otomasyon altyapısı.</li>
+      <li><b>Kendini İyileştiren Şebeke (Self-Healing Grid):</b> Halka şebekede otomatik anahtarlama ile arızalı bölüm izole edilirken sağlıklı bölümlerin beslemesi kesintisiz sürdürülür.</li>
+    </ul>
+  `,
+  quiz:[
+    {q:"SF6 kesicilerde yalıtım ve ark söndürme için ne kullanılır?", opts:["Yağ","SF6 gazı","Basınçlı hava","Saf su"], correct:1, explain:"SF6 (kükürt hekzaflorür) gazı, yüksek dielektrik dayanımı sayesinde YG kesicilerde yaygın olarak kullanılır."},
+    {q:"Yük ayırıcısı (LBS) ile kesici arasındaki temel fark nedir?", opts:["LBS kısa devre akımını da güvenle keser","LBS sadece sınırlı yük akımını keser, kısa devre akımını kesemez","İkisi birebir aynı işlevi görür","LBS sadece AG'de bulunur"], correct:1, explain:"LBS, normal yük akımını kesebilir fakat kısa devre gibi yüksek arıza akımlarını kesecek kapasiteye sahip değildir."},
+    {q:"Akıllı sayaç (AMI) teknolojisinin geleneksel sayaçlara göre temel farkı nedir?", opts:["Sadece daha küçük olması","Uzaktan okuma ve uzaktan kesme-açma imkânı sağlaması","Hiç elektrik ölçmemesi","Sadece dekoratif olması"], correct:1, explain:"AMI, sahaya gitmeden veri okuma ve müdahale (kesme/açma) yapılmasını sağlayan iki yönlü iletişimli bir sistemdir."},
+    {q:"Arıza Gösterge Cihazı (FPI) sahada hangi amaçla kullanılır?", opts:["Gerilim düşümünü telafi etmek için","Arıza akımının geçtiği noktayı sinyalle göstererek arıza yerinin hızlı tespitini sağlamak","Trafo yağını soğutmak için","Sayaç kalibrasyonu için"], correct:1, explain:"FPI, üzerinden arıza akımı geçtiğinde tetiklenerek ekiplerin arıza bölgesini hızlıca daraltmasına yardımcı olur."},
+    {q:"'Kendini iyileştiren şebeke' (self-healing grid) kavramı en çok hangi şebeke topolojisinde anlamlıdır?", opts:["Sadece radyal şebekede","Halka (loop) şebekede, otomatik anahtarlama ile","Sadece AG şebekede","Sadece sayaç sisteminde"], correct:1, explain:"Otomatik anahtarlama, alternatif besleme yolu bulunan halka şebekelerde arızalı bölümü izole edip beslemeye devam etmeyi mümkün kılar."}
+  ]
+},
+{
+  id:"m8", code:"FİDER 09", title:"Saha Senaryosu Simülatörü",
+  lesson:`
+    <h4>Karar Anı</h4>
+    <p>Aşağıdaki senaryolarda sahada karşılaşabileceğin durumlar için <b>ilk doğru adımı</b> seçmen isteniyor. Bu bölüm, teorik bilgiyi saha refleksine dönüştürmek için tasarlandı.</p>
+  `,
+  quiz:[
+    {q:"SENARYO: AG hatta planlı bakım yapacaksın. İlk adımın ne olmalı?", opts:["Doğrudan çalışmaya başlamak","Hattı ayırıp kilitleme-etiketleme (LOTO) uygulamak","Sadece ikaz levhası koymak","Ekip arkadaşına 'dikkat et' demek"], correct:1, explain:"Beş Altın Kural'ın ilk iki adımı ayırma ve kilitleme-etiketlemedir; çalışmaya bundan önce başlanmaz."},
+    {q:"SENARYO: Bir fiderde tek faz-toprak arızası oluştu ve recloser bir kez açıp tekrar kapandı ama arıza sürüyor. Ne düşünmelisin?", opts:["Arıza geçicidir, önemsizdir","Arıza muhtemelen kalıcıdır, saha ekibi arızayı yerinde tespit etmeli","Trafo değiştirilmeli","Sayaç arızalıdır"], correct:1, explain:"Recloserin tekrar kapanmasına rağmen arıza sürüyorsa, bu genellikle kalıcı bir arızaya işaret eder ve sahada fiziksel tespit gerekir."},
+    {q:"SENARYO: Bakım için ayrılan bir YG hattında çalışmaya başlamadan önce gerilim dedektörü hatasız 'gerilim yok' gösterdi. Sıradaki adım?", opts:["Hemen çalışmaya başlamak","Hattı topraklamak ve kısa devre etmek","Ayırıcıyı tekrar kapatmak","Hiçbir şey yapmadan beklemek"], correct:1, explain:"Beş Altın Kural'da gerilim kontrolünden sonraki adım, olası geri beslemelere karşı topraklama ve kısa devre yapmaktır."},
+    {q:"SENARYO: Bir dağıtım trafosunun etiketinde %Z değeri düşük görünüyor. Bu, koruma seçiminde ne anlama gelir?", opts:["Kısa devre akımı daha yüksek olabilir, kesici kapasitesi buna göre seçilmeli","Hiçbir etkisi yoktur","Trafo daha az ısınır","Sadece verim artar"], correct:0, explain:"Düşük empedans, arıza akımını daha az sınırlar; bu da daha yüksek kısa devre akımı ve buna uygun kesici kapasitesi gerektirir."},
+    {q:"SENARYO: Yeni bir AG malzemesi için teknik şartname hazırlanacak ve piyasada ulusal standart bulunmuyor. Ne yapılmalı?", opts:["Şartname hazırlanamaz","Uluslararası standart yoksa diğer ülke standartları kullanılabilir","Marka doğrudan belirtilir, sorun olmaz","İş iptal edilir"], correct:1, explain:"Madde 5/3: ulusal standart yoksa uluslararası standarda, o da yoksa diğer ülke standartlarına göre düzenleme yapılır."}
+  ]
+},
+{
+  id:"m10", code:"FİDER 10", title:"Sembol Eşleştirme Oyunu", type:"match",
+  lesson:`
+    <h4>Sembolü Ekipmanla Eşleştir</h4>
+    <p>Soldaki şematik sembole tıkla, ardından sağdan doğru ekipman adını seç. Her doğru eşleşme <span class="formula">10 XP</span> kazandırır.</p>
+  `,
+  pairs:[
+    {key:"kesici", name:"Kesici (Breaker)"},
+    {key:"ayirici", name:"Ayırıcı (Disconnector)"},
+    {key:"yukayirici", name:"Yük Ayırıcısı (LBS)"},
+    {key:"parafudur", name:"Parafudur (Sürge Arrester)"},
+    {key:"sigorta", name:"Sigorta (Fuse)"},
+    {key:"topraklama", name:"Topraklama Anahtarı"},
+    {key:"sayac", name:"Sayaç (Elektrik)"},
+    {key:"ct", name:"Akım Trafosu (CT)"},
+    {key:"vt", name:"Gerilim Trafosu (VT/PT)"},
+    {key:"trafo", name:"Güç / Dağıtım Trafosu"},
+    {key:"direk", name:"Direk (Pole)"},
+    {key:"izolator", name:"İzolatör"},
+    {key:"fpi", name:"Arıza Gösterge (FPI)"},
+    {key:"rtu", name:"RTU / Uzaktan Kumanda"}
+  ]
+}
+];
+
+const TITLES = [
+  {min:0, name:"ÇIRAK"},
+  {min:60, name:"KALFA"},
+  {min:150, name:"USTA ELEKTRİKÇİ"},
+  {min:250, name:"SAHA ŞEFİ"},
+  {min:330, name:"BAŞ MÜHENDİS"}
+];
+const XP_PER_Q = 10;
+const TOTAL_Q = MODULES.reduce((a,m)=>a+(m.quiz ? m.quiz.length : (m.pairs ? m.pairs.length : 0)),0);
+const MAX_XP = TOTAL_Q * XP_PER_Q;
+
+/* ================= STATE ================= */
+let state = { answered:{}, matched:{}, xp:0, certName:'' };
+let activeModule = MODULES[0].id;
+let matchSelection = null; /* {type:'icon'|'name', key:string} - geçici oturum durumu */
+
+function keyFor(mid,qi){return mid+"_"+qi;}
+
+const LS_KEY = 'yedas-corum-progress';
+const hasClaudeStorage = (typeof window !== 'undefined') && !!window.storage;
+
+async function loadState(){
+  try{
+    if(hasClaudeStorage){
+      const res = await window.storage.get(LS_KEY, false);
+      if(res && res.value){
+        const parsed = JSON.parse(res.value);
+        if(parsed && parsed.answered) state = parsed;
+      }
+    }else{
+      const raw = localStorage.getItem(LS_KEY);
+      if(raw){
+        const parsed = JSON.parse(raw);
+        if(parsed && parsed.answered) state = parsed;
+      }
+    }
+  }catch(e){ /* kayıtlı ilerleme yok */ }
+  recomputeXP();
+}
+async function saveState(){
+  try{
+    if(hasClaudeStorage){
+      await window.storage.set(LS_KEY, JSON.stringify(state), false);
+    }else{
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
+    }
+  }catch(e){ console.error('Kaydetme hatası', e); }
+}
+function recomputeXP(){
+  let xp=0;
+  Object.keys(state.answered).forEach(k=>{ if(state.answered[k].correct) xp+=XP_PER_Q; });
+  if(state.matched){ Object.keys(state.matched).forEach(k=>{ if(state.matched[k]) xp+=XP_PER_Q; }); }
+  state.xp = xp;
+}
+
+/* ================= RENDER ================= */
+function titleForXP(xp){
+  let t = TITLES[0].name;
+  for(const tier of TITLES){ if(xp>=tier.min) t=tier.name; }
+  return t;
+}
+function moduleStats(mod){
+  if(mod.type === 'match'){
+    let matchedCount = 0;
+    mod.pairs.forEach(p=>{ if(state.matched[mod.id+"_"+p.key]) matchedCount++; });
+    return {answeredCount:matchedCount, correctCount:matchedCount, total:mod.pairs.length};
+  }
+  let answeredCount=0, correctCount=0;
+  mod.quiz.forEach((q,i)=>{
+    const rec = state.answered[keyFor(mod.id,i)];
+    if(rec){ answeredCount++; if(rec.correct) correctCount++; }
+  });
+  return {answeredCount, correctCount, total:mod.quiz.length};
+}
+function isModuleComplete(mod){
+  const s = moduleStats(mod);
+  if(s.total === 0) return false;
+  if(mod.type === 'match') return (s.correctCount/s.total) >= 0.8;
+  return s.answeredCount === s.total && (s.correctCount/s.total) >= 0.8;
+}
+const REQUIRED_BADGES = 7;
+
+function renderNav(){
+  const row = document.getElementById('feeder-row');
+  row.innerHTML = '';
+  MODULES.forEach(mod=>{
+    const s = moduleStats(mod);
+    const done = isModuleComplete(mod);
+    const btn = document.createElement('button');
+    btn.className = 'feeder-btn' + (mod.id===activeModule ? ' active':'');
+    const led = document.createElement('span');
+    led.className = 'led' + (done ? ' done' : (s.answeredCount>0 ? ' on' : ''));
+    btn.appendChild(led);
+    const span = document.createElement('span');
+    span.textContent = mod.code;
+    btn.appendChild(span);
+    btn.onclick = ()=>{ activeModule = mod.id; renderAll(); };
+    row.appendChild(btn);
+  });
+}
+
+let lastBadgeCount = 0;
+let statusInitialized = false;
+function renderStatus(){
+  recomputeXP();
+  animateXP(state.xp);
+  document.getElementById('stat-title').textContent = titleForXP(state.xp);
+  const badgeCount = MODULES.filter(isModuleComplete).length;
+  document.getElementById('stat-badges').textContent = badgeCount + '/' + MODULES.length;
+  document.getElementById('rank-title-full').textContent = titleForXP(state.xp);
+  document.getElementById('rank-text').textContent = state.xp + ' / ' + MAX_XP + ' XP';
+  const pct = Math.min(100, Math.round((state.xp/MAX_XP)*100));
+  document.getElementById('rank-fill').style.width = pct + '%';
+  if(statusInitialized && badgeCount > lastBadgeCount){
+    showToast('✓ Yeni rozet kazanıldı! (' + badgeCount + '/' + MODULES.length + ')');
+  }
+  lastBadgeCount = badgeCount;
+  statusInitialized = true;
+  renderCertificate(badgeCount);
+}
+
+function renderMain(){
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  MODULES.forEach(mod=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'module' + (mod.id===activeModule ? ' active':'');
+    wrap.id = 'wrap-'+mod.id;
+
+    const s = moduleStats(mod);
+    const done = isModuleComplete(mod);
+
+    wrap.innerHTML = `
+      <div class="module-head">
+        <div>
+          <div class="tag">${mod.code}</div>
+          <h3>${mod.title}</h3>
+        </div>
+        <div class="module-progress">
+          <div>${s.answeredCount}/${s.total} soru cevaplandı · ${s.correctCount} doğru</div>
+          ${done ? '<div class="badge-strip"><span class="badge-pill">✓ ROZET KAZANILDI</span></div>' : ''}
+        </div>
+      </div>
+      <div class="lesson-card reveal">${mod.lesson}</div>
+      ${mod.type === 'match'
+        ? `<div class="quiz-label">EŞLEŞTİRME — ${s.total} ÇİFT</div><div class="match-holder" data-mid="${mod.id}"></div>`
+        : `<div class="quiz-label">DEĞERLENDİRME — ${s.total} SORU</div><div class="quiz-holder" data-mid="${mod.id}"></div>`
+      }
+    `;
+    main.appendChild(wrap);
+    if(mod.type === 'match'){
+      wrap.querySelector('.match-holder').appendChild(renderMatchGame(mod));
+    }else{
+      const holder = wrap.querySelector('.quiz-holder');
+      mod.quiz.forEach((q,qi)=>{
+        holder.appendChild(renderQuestion(mod, q, qi));
+      });
+    }
+  });
+  attachReveal();
+}
+
+function shuffleArray(arr){
+  const a = [...arr];
+  for(let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+const matchOrderCache = {};
+function getMatchOrders(mod){
+  if(!matchOrderCache[mod.id]){
+    matchOrderCache[mod.id] = {
+      icons: shuffleArray(mod.pairs),
+      names: shuffleArray(mod.pairs)
+    };
+  }
+  return matchOrderCache[mod.id];
+}
+
+function renderMatchGame(mod){
+  const wrap = document.createElement('div');
+  wrap.className = 'match-wrap';
+
+  const iconCol = document.createElement('div');
+  const nameCol = document.createElement('div');
+  iconCol.innerHTML = '<div class="match-col-label">SEMBOLLER</div>';
+  nameCol.innerHTML = '<div class="match-col-label">EKİPMAN ADLARI</div>';
+
+  // Karışık sıralama: semboller ve isimler birbirinden bağımsız olarak rastgele karıştırılır,
+  // sıra bir kere belirlenip oturum boyunca sabit tutulur (her tıklamada yeniden karışmaz).
+  const orders = getMatchOrders(mod);
+  const iconOrder = orders.icons;
+  const nameOrder = orders.names;
+
+  iconOrder.forEach(p=>{
+    const isMatched = !!state.matched[mod.id+"_"+p.key];
+    const btn = document.createElement('button');
+    btn.className = 'match-item' + (isMatched ? ' matched' : (matchSelection && matchSelection.type==='icon' && matchSelection.key===p.key ? ' selected':''));
+    btn.innerHTML = iconSVG(p.key, 28);
+    if(!isMatched){
+      btn.onclick = ()=> handleMatchClick(mod, 'icon', p.key);
+    }
+    iconCol.appendChild(btn);
+  });
+
+  nameOrder.forEach(p=>{
+    const isMatched = !!state.matched[mod.id+"_"+p.key];
+    const btn = document.createElement('button');
+    btn.className = 'match-item' + (isMatched ? ' matched' : (matchSelection && matchSelection.type==='name' && matchSelection.key===p.key ? ' selected':''));
+    btn.innerHTML = `<span>${p.name}</span>`;
+    if(!isMatched){
+      btn.onclick = ()=> handleMatchClick(mod, 'name', p.key);
+    }
+    nameCol.appendChild(btn);
+  });
+
+  wrap.appendChild(iconCol);
+  wrap.appendChild(nameCol);
+  return wrap;
+}
+
+function handleMatchClick(mod, type, key){
+  if(!matchSelection){
+    matchSelection = {type, key};
+    renderAll();
+    return;
+  }
+  if(matchSelection.type === type){
+    // aynı sütunda yeni seçim yapıldı
+    matchSelection = {type, key};
+    renderAll();
+    return;
+  }
+  // farklı sütunlardan bir çift seçildi
+  const isCorrect = (matchSelection.key === key);
+  if(isCorrect){
+    state.matched[mod.id+"_"+key] = true;
+    matchSelection = null;
+    saveState();
+    renderAll();
+  }else{
+    matchSelection = null;
+    renderAll();
+  }
+}
+
+function renderQuestion(mod, q, qi){
+  const k = keyFor(mod.id, qi);
+  const rec = state.answered[k];
+  const div = document.createElement('div');
+  div.className = 'question';
+  const qtext = document.createElement('div');
+  qtext.className = 'qtext';
+  qtext.innerHTML = `<span class="qnum">Q${qi+1}.</span>${q.q}`;
+  div.appendChild(qtext);
+
+  const opts = document.createElement('div');
+  opts.className = 'options';
+  q.opts.forEach((optText, oi)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = optText;
+    if(rec){
+      b.classList.add('disabled');
+      if(oi === q.correct) b.classList.add('correct');
+      if(oi === rec.chosen && oi !== q.correct) b.classList.add('wrong');
+    }
+    b.onclick = ()=>{
+      if(state.answered[k]) return;
+      const correct = (oi === q.correct);
+      state.answered[k] = {chosen:oi, correct};
+      saveState();
+      renderAll();
+    };
+    opts.appendChild(b);
+  });
+  div.appendChild(opts);
+
+  const explain = document.createElement('div');
+  explain.className = 'explain' + (rec ? ' show':'');
+  explain.textContent = q.explain;
+  div.appendChild(explain);
+
+  return div;
+}
+
+function renderCertificate(badgeCount){
+  const box = document.getElementById('cert-section');
+  if(!box) return;
+  const total = MODULES.length;
+  if(badgeCount < REQUIRED_BADGES){
+    box.innerHTML = `
+      <div class="symbol-section-head">
+        <div>
+          <div class="eyebrow">YEDAŞ TEBRİK BELGESİ</div>
+          <h3 style="font-family:'Oswald',sans-serif; font-size:22px; margin:4px 0 0;">Kilitli — Yeterli Fider Rozeti Gerekiyor</h3>
+        </div>
+      </div>
+      <div class="cert-locked">${badgeCount} / ${total} fider rozeti kazanıldı. Tebrik belgesinin kilidini açmak için ${total} fiderden en az ${REQUIRED_BADGES} tanesinde %80 ve üzeri başarı tamamlaman gerekiyor.</div>
+    `;
+    return;
+  }
+  const name = state.certName || '';
+  box.innerHTML = `
+    <div class="symbol-section-head">
+      <div>
+        <div class="eyebrow">YEDAŞ TEBRİK BELGESİ</div>
+        <h3 style="font-family:'Oswald',sans-serif; font-size:22px; margin:4px 0 0;">Tebrikler — Belgen Hazır</h3>
+      </div>
+    </div>
+    <div id="certificate-card">
+      <div class="cert-eyebrow">YEDAŞ ÇORUM</div>
+      <div class="cert-heading">TEBRİK BELGESİ</div>
+      <div class="cert-sub">YEDAŞ, sahaya hazır olduğunuzu tebrik eder</div>
+      <div class="cert-name">${escapeHTML(name).toLocaleUpperCase('tr')}</div>
+      <div class="cert-sub">${total} fiderden ${badgeCount} tanesinde %80 ve üzeri başarı göstermiştir</div>
+      <div class="cert-meta">
+        <div>TARİH<b>${new Date().toLocaleDateString('tr-TR')}</b></div>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+      <button class="cert-btn" id="cert-download">PNG OLARAK İNDİR</button>
+      <button class="cert-btn secondary" id="cert-rename">ADI DEĞİŞTİR</button>
+    </div>
+  `;
+  const renameBtn = document.getElementById('cert-rename');
+  if(renameBtn){
+    renameBtn.onclick = ()=>{
+      showNameGate(state.certName || '');
+    };
+  }
+  const dlBtn = document.getElementById('cert-download');
+  if(dlBtn){
+    dlBtn.onclick = ()=>{
+      if(typeof html2canvas === 'undefined'){
+        showToast('İndirme kütüphanesi yüklenemedi, internet bağlantını kontrol et.');
+        return;
+      }
+      html2canvas(document.getElementById('certificate-card'), {backgroundColor:null, scale:2}).then(canvas=>{
+        const link = document.createElement('a');
+        link.download = 'yedas-corum-tebrik-belgesi.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    };
+  }
+}
+function escapeHTML(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+function renderAll(){
+  renderNav();
+  renderStatus();
+  renderMain();
+}
+
+document.getElementById('reset-btn').onclick = async ()=>{
+  if(!confirm('Tüm ilerlemen (XP ve cevapların) sıfırlanacak. Emin misin?')) return;
+  state = { answered:{}, matched:{}, xp:0, certName:'' };
+  matchSelection = null;
+  await saveState();
+  renderAll();
+  showNameGate();
+};
+
+/* ================= NAME GATE ================= */
+function showNameGate(prefill){
+  const gate = document.getElementById('name-gate');
+  const input = document.getElementById('name-gate-input');
+  const err = document.getElementById('name-gate-error');
+  input.value = prefill || '';
+  err.classList.remove('show');
+  gate.classList.remove('hidden');
+  setTimeout(()=>input.focus(), 60);
+}
+function hideNameGate(){
+  document.getElementById('name-gate').classList.add('hidden');
+}
+function submitNameGate(){
+  const input = document.getElementById('name-gate-input');
+  const err = document.getElementById('name-gate-error');
+  const val = input.value.trim();
+  if(!val){ err.classList.add('show'); input.focus(); return; }
+  state.certName = val;
+  saveState();
+  hideNameGate();
+  renderAll();
+}
+document.getElementById('name-gate-submit').onclick = submitNameGate;
+document.getElementById('name-gate-input').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') submitNameGate();
+});
+
+initTheme();
+runBootSequence();
+renderSymbolLibrary();
+loadState().then(()=>{
+  renderAll();
+  if(!state.certName){ showNameGate(); } else { hideNameGate(); }
+});
+</script>
+</body>
+</html>
